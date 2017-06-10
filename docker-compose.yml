@@ -1,0 +1,26 @@
+version: '2'
+services:
+  base-criptopunks:
+    build: ./
+    volumes:
+      - .:/go/src/github.com/disiqueira/CriptoPunks
+
+  scraper:
+    extends: base-criptopunks
+    environment:
+      APP_FUN: "-cmd=scraper"
+    depends_on:
+      - mysql-criptopunks
+    environment:
+      CPS_DATABASE: ${DB_NAME}
+      CPS_USER: ${DB_USER}
+      CPS_PASSWORD: ${DB_PASS}
+      CPS_HOSTNAME: "mysql-criptopunks"
+
+  mysql-criptopunks:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
